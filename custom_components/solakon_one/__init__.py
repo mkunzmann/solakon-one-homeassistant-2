@@ -1,4 +1,5 @@
 """The Solakon ONE integration."""
+
 from __future__ import annotations
 
 import logging
@@ -6,12 +7,12 @@ from datetime import timedelta
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import Platform
+from homeassistant.const import CONF_SCAN_INTERVAL, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import DOMAIN, SCAN_INTERVAL
+from .const import DEFAULT_SCAN_INTERVAL, DOMAIN
 from .modbus import SolakonModbusHub
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,12 +22,17 @@ PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SELECT, Platform.NUMBER]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Solakon ONE from a config entry."""
+    # Check options first, then fall back to data for scan_interval
+    scan_interval = entry.options.get(
+        CONF_SCAN_INTERVAL, entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+    )
+
     hub = SolakonModbusHub(
         hass,
         entry.data["host"],
         entry.data["port"],
         entry.data.get("slave_id", 1),
-        entry.data.get("scan_interval", SCAN_INTERVAL),
+        scan_interval,
     )
 
     await hub.async_setup()

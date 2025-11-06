@@ -6,7 +6,6 @@ DEFAULT_NAME: Final = "Solakon ONE"
 DEFAULT_PORT: Final = 502
 DEFAULT_SLAVE_ID: Final = 1
 DEFAULT_SCAN_INTERVAL: Final = 30
-SCAN_INTERVAL: Final = 30
 
 # Register definitions
 REGISTERS = {

@@ -119,8 +119,12 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 {
                     vol.Optional(
                         CONF_SCAN_INTERVAL,
-                        default=self._config_entry.data.get(
-                            CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                        # Show the currently effective value: options override data
+                        default=self._config_entry.options.get(
+                            CONF_SCAN_INTERVAL,
+                            self._config_entry.data.get(
+                                CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+                            ),
                         ),
                     ): vol.All(vol.Coerce(int), vol.Range(min=1, max=300)),
                 }
